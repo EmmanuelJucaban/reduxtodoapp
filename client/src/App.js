@@ -1,19 +1,16 @@
 import React from 'react';
+import { Container, Button, Form, Grid, Header, Image, Message, Segment  } from 'semantic-ui-react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import Navbar from './components/NavBar';
-
-
+import LogForm from './containers/LogForm';
 function App() {
   return (
     <Router>
-      <Navbar/>
-      <Route exact path={'/'}>
-        <h1>Hello World</h1>
-      </Route>
-      <Route exact path={'/login'}>
-        <h1>Todos!</h1>
-      </Route>
+      <Container>
+
+        <Route exact path='/' render={ () => <LogForm logged={false}/>} />
+        <Route exact path='/signin' render={ () => <LogForm logged={true}/>} />
+      </Container>
     </Router>
   );
 }
