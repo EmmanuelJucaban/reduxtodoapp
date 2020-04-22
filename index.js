@@ -12,6 +12,6 @@ app.use(express.json());
 app.use(routes);
 
 // Connect database
-mongoose.connect(mongoose.connect('mongodb://localhost/reduxtodo', { useNewUrlParser: true, useCreateIndex: true });)
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/reduxTodo', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
 app.listen(PORT);
