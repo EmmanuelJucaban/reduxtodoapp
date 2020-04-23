@@ -1,10 +1,9 @@
 import React from 'react'
 import { Button, Card, Header, Icon, Modal } from 'semantic-ui-react';
 
-const DeleteModal = props => (
+const DeleteModal = ({ handleClick, id }) => (
   <Modal trigger={ <Button inverted color='red' icon='window close' content='Delete'/>}
          basic size='small'
-         open={props.open}
         style={{ width: '450px'}}>
     <Header icon='archive' content='Archive Old Messages' />
     <Modal.Content>
@@ -14,11 +13,11 @@ const DeleteModal = props => (
       </p>
     </Modal.Content>
     <Modal.Actions>
-      <Button fluid inverted negative>
+      <Button fluid inverted negative onClick={ () => handleClick(id)}>
         <Icon name='remove'/> Are you sure you want to delete?
       </Button>
     </Modal.Actions>
   </Modal>
-)
+);
 
 export default DeleteModal

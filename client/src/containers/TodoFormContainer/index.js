@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+
+import BarLoader from 'react-spinners/BarLoader';
+
+import DeleteModal from '../../components/DeleteModal';
+
 import {
   Button,
   Form,
@@ -7,12 +12,21 @@ import {
   Header,
   List,
   Segment
-} from 'semantic-ui-react';
+} from 'semantic-ui-react'
+import axios from 'axios';
+
 
 class TodoFormContainer extends Component {
   state = {
     todos: [],
-    todoText: ''
+    todoText: '',
+    error: '',
+    loading: true,
+    open: false
+  }
+
+  async componentDidMount() {
+    this.getTodos();
   }
 
   handleSubmit = event => {
@@ -26,9 +40,49 @@ class TodoFormContainer extends Component {
     this.setState({ todoText: event.target.value });
   }
 
-  handleClick = event => {
-    event.preventDefault();
+  handleClick = async id => {
+    try {
+      const { data } = await axios.delete(`/api/todos/${id}`);
+      this.getTodos();
+    } catch (e) {
+
+    }
   }
+
+
+  getTodos = async () => {
+    try {
+      const { data: todos } = await axios.get('/api/todos');
+      this.setState({ todos, loading: false });
+    } catch (error) {
+      this.setState({ error });
+    }
+  }
+
+  renderList = () => {
+    const self = this;
+    if(this.state.loading) {
+      return <BarLoader css={{ margin: '0 auto',}} width={450}/>;
+    } else {
+      return (
+        <List divided >
+          { this.state.todos.map(({ _id, text, completed }) => {
+            return (
+              <List.Item key={_id}>
+                <List.Content floated="left" as={Link} to={`/todos/${_id}`}>
+                  <p style={{ paddingTop: '5px' }}>{text}</p>
+                </List.Content>
+                <List.Content floated="right">
+                  <DeleteModal size="mini" negative handleClick={self.handleClick} id={_id}>Delete</DeleteModal>
+                </List.Content>
+              </List.Item>
+            );
+          })}
+        </List>
+      )
+    }
+  }
+
   render() {
     return (
         <>
@@ -44,20 +98,7 @@ class TodoFormContainer extends Component {
                 onChange={this.handleChange}
                 onSubmit={this.handleSubmit}/>
                <Form.Button fluid color="teal" type='submit' onClick={this.handleSubmit}>Add Todo</Form.Button>
-              <List divided >
-                { this.state.todos.map((todo,i) => {
-                  return (
-                    <List.Item key={i} as={Link} to={`/todos/${i}`}>
-                      <List.Content floated="left">
-                        <p style={{ paddingTop: '5px' }}>{todo}</p>
-                      </List.Content>
-                      <List.Content floated="right">
-                        <Button size="mini" negative onClick={ this.handleClick }>Delete</Button>
-                      </List.Content>
-                    </List.Item>
-                  );
-                })}
-              </List>
+              { this.renderList() }
             </Segment>
           </Form>
         </>

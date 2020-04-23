@@ -9,7 +9,7 @@ class LogForm extends Component {
     return (
       <>
         <Header as='h2' color='teal' textAlign='center'>
-          <h1>Log in to your account</h1>
+          <h3>Log in to your account</h3>
         </Header>
         <Form size='large'>
           <Segment stacked>
