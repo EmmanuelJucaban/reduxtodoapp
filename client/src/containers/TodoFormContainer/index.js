@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Button,
   Form,
   FormInput,
-  Grid,
-  GridColumn,
   Header,
   List,
   Segment
@@ -26,11 +25,15 @@ class TodoFormContainer extends Component {
     console.log(this.state);
     this.setState({ todoText: event.target.value });
   }
+
+  handleClick = event => {
+    event.preventDefault();
+  }
   render() {
     return (
         <>
           <Header as="h2" color="teal" textAlign="center">Welcome to the todo app!</Header>
-          <Form size="large" onSubmit={this.handleSubmit}>
+          <Form size="large" >
             <Segment stacked>
               <FormInput
                 fluid
@@ -38,16 +41,18 @@ class TodoFormContainer extends Component {
                 iconPosition='left'
                 placeholder='Add a todo'
                 value={this.state.todoText}
-                onChange={this.handleChange}/>
+                onChange={this.handleChange}
+                onSubmit={this.handleSubmit}/>
+               <Form.Button fluid color="teal" type='submit' onClick={this.handleSubmit}>Add Todo</Form.Button>
               <List divided >
                 { this.state.todos.map((todo,i) => {
                   return (
-                    <List.Item key={i}>
+                    <List.Item key={i} as={Link} to={`/todos/${i}`}>
                       <List.Content floated="left">
                         <p style={{ paddingTop: '5px' }}>{todo}</p>
                       </List.Content>
                       <List.Content floated="right">
-                        <Button size="mini" negative>Delete</Button>
+                        <Button size="mini" negative onClick={ this.handleClick }>Delete</Button>
                       </List.Content>
                     </List.Item>
                   );

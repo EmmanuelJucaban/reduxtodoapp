@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import {
+  Card,
+  Icon,
   Container,
   Button,
   Form,
@@ -16,6 +18,7 @@ import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 // import LogForm from './containers/LogForm';
 import TodoFormContainer from './containers/TodoFormContainer';
 import LogForm from './containers/LogForm';
+import TodoCardContainer from './containers/TodoCardContainer';
 
 
 class App extends Component {
@@ -34,12 +37,14 @@ class App extends Component {
     console.log(this.state);
     this.setState({ todoText: event.target.value });
   }
+
+
   render() {
     return (
       <Router>
         <Container>
-          <Grid textAlign='center' verticalAlign='middle' style={{ height: '100vh'}}>
-            <GridColumn style={{ maxWidth: 500 }}>
+          <Grid textAlign='center' verticalAlign='middle' style={{ height: '100vh' }} inverted>
+             <GridColumn style={{ maxWidth: 500 }}>
               <Menu widths={3}>
                 <Menu.Item
                   name='Sign Up'
@@ -60,6 +65,7 @@ class App extends Component {
               <Route exact path='/' render={ () => <LogForm logged={false}/>}/>
               <Route exact path='/signin' render={ () => <LogForm logged={true}/>}/>
               <Route exact path='/todos' component={TodoFormContainer}/>
+              <Route exact path='/todos/:id' component={TodoCardContainer}/>
             </GridColumn>
           </Grid>
 
