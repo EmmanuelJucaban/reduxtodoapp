@@ -24,4 +24,43 @@ module.exports = {
       return res.status.json({ error });
     }
   },
+  getTodoById: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const todo = await Todo.findById(id);
+      if (!todo) {
+        return res.status(404).json({ error: 'No todo found with that id'});
+      }
+      return res.json(todo);
+    } catch (error) {
+      return res.status(403).json({ error });
+    }
+  },
+  deleteTodoById: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const todo = await Todo.findByIdAndDelete(id);
+      if (!todo) {
+        return res.status(404).json({ error: 'No todo found with that Id'});
+      }
+      return res.json({ success: true });
+    } catch (error) {
+      return res.status(403).json({ error });
+    }
+  },
+  updateTodoById: async (req, res) => {
+    const { id } = req.params;
+    const { completed, text } = req.body;
+    try {
+      const todo = await Todo.findByIdAndUpdate(id,
+        { completed, text },
+        { new: true, useFindAndModify: false });
+      if (!todo) {
+        return res.status(404).json({ error: 'No todo found with that Id'});
+      }
+      return res.json(todo);
+    } catch (error) {
+      return res.status(403).json({ error });
+    }
+  },
 };
