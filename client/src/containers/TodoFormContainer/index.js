@@ -6,24 +6,56 @@ import {
   Grid,
   GridColumn,
   Header,
-  Image,
-  Message,
+  List,
   Segment
 } from 'semantic-ui-react';
 
 class TodoFormContainer extends Component {
+  state = {
+    todos: [],
+    todoText: ''
+  }
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const todos = [...this.state.todos, this.state.todoText];
+    this.setState({ todos, todoText: '' });
+  }
+
+  handleChange = event => {
+    console.log(this.state);
+    this.setState({ todoText: event.target.value });
+  }
   render() {
     return (
-      <Grid textAlign='center' verticalAlign='middle'>
-        <GridColumn style={{ maxWidth: 450 }}>
+        <>
           <Header as="h2" color="teal" textAlign="center">Welcome to the todo app!</Header>
-          <Form size="large">
+          <Form size="large" onSubmit={this.handleSubmit}>
             <Segment stacked>
-              <FormInput fluid icon='user' iconPosition='left' placeholder='Add a todo'/>
+              <FormInput
+                fluid
+                icon='user'
+                iconPosition='left'
+                placeholder='Add a todo'
+                value={this.state.todoText}
+                onChange={this.handleChange}/>
+              <List divided >
+                { this.state.todos.map((todo,i) => {
+                  return (
+                    <List.Item key={i}>
+                      <List.Content floated="left">
+                        <p style={{ paddingTop: '5px' }}>{todo}</p>
+                      </List.Content>
+                      <List.Content floated="right">
+                        <Button size="mini" negative>Delete</Button>
+                      </List.Content>
+                    </List.Item>
+                  );
+                })}
+              </List>
             </Segment>
           </Form>
-        </GridColumn>
-      </Grid>
+        </>
     );
   }
 }
