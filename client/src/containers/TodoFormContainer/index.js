@@ -11,7 +11,8 @@ import {
   FormInput,
   Header,
   List,
-  Segment
+  Segment,
+  Message
 } from 'semantic-ui-react'
 import axios from 'axios';
 
@@ -24,36 +25,35 @@ class TodoFormContainer extends Component {
     loading: true,
     open: false
   }
-
   async componentDidMount() {
     this.getTodos();
   }
-
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault();
-    const todos = [...this.state.todos, this.state.todoText];
-    this.setState({ todos, todoText: '' });
+    // const todos = [...this.state.todos, this.state.todoText];
+    try {
+      const response = await axios.post('/api/todos', { text: this.state.todoText });
+      this.getTodos();
+    } catch (error) {
+      this.setState({ error: 'You cannot leave the text field blank' });
+    }
   }
-
   handleChange = event => {
     console.log(this.state);
     this.setState({ todoText: event.target.value });
   }
-
   handleClick = async id => {
     try {
       const { data } = await axios.delete(`/api/todos/${id}`);
       this.getTodos();
     } catch (e) {
-
+      console.log(e);
     }
   }
-
-
   getTodos = async () => {
     try {
       const { data: todos } = await axios.get('/api/todos');
-      this.setState({ todos, loading: false });
+      this.setState({ todos, loading: false, todoText: '', error: '' });
     } catch (error) {
       this.setState({ error });
     }
@@ -87,7 +87,7 @@ class TodoFormContainer extends Component {
     return (
         <>
           <Header as="h2" color="teal" textAlign="center">Welcome to the todo app!</Header>
-          <Form size="large" >
+          <Form size="large" error={ this.state.error }>
             <Segment stacked>
               <FormInput
                 fluid
@@ -97,6 +97,10 @@ class TodoFormContainer extends Component {
                 value={this.state.todoText}
                 onChange={this.handleChange}
                 onSubmit={this.handleSubmit}/>
+              <Message
+                error
+                header='Action Forbidden'
+                content={this.state.error}/>
                <Form.Button fluid color="teal" type='submit' onClick={this.handleSubmit}>Add Todo</Form.Button>
               { this.renderList() }
             </Segment>

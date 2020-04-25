@@ -21,7 +21,7 @@ module.exports = {
       const newTodo = await new Todo({ text }).save();
       return res.status(200).json(newTodo);
     } catch (error) {
-      return res.status.json({ error });
+      return res.status(403).json({ error: 'You must provide a name' });
     }
   },
   getTodoById: async (req, res) => {

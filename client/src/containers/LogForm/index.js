@@ -9,7 +9,7 @@ class LogForm extends Component {
     return (
       <>
         <Header as='h2' color='teal' textAlign='center'>
-          <h3>Log in to your account</h3>
+          { !logged ? 'Create an account' : 'Sign in to your account'}
         </Header>
         <Form size='large'>
           <Segment stacked>
