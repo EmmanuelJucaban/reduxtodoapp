@@ -21,59 +21,73 @@ class TodoFormContainer extends Component {
   state = {
     todos: [],
     todoText: '',
-    error: '',
+    error: false,
     loading: true,
-    open: false
+    open: false,
+    errorMessage: ''
   }
+
   async componentDidMount() {
     this.getTodos();
   }
+
   handleSubmit = async event => {
     event.preventDefault();
-    // const todos = [...this.state.todos, this.state.todoText];
     try {
-      const response = await axios.post('/api/todos', { text: this.state.todoText });
+      await axios.post('/api/todos', { text: this.state.todoText });
       this.getTodos();
     } catch (error) {
-      this.setState({ error: 'You cannot leave the text field blank' });
+      this.setState({ errorMessage: 'You cannot leave the text field blank', error: true });
     }
   }
+
   handleChange = event => {
     console.log(this.state);
     this.setState({ todoText: event.target.value });
   }
-  handleClick = async id => {
+
+  handleDeleteClick = async id => {
     try {
-      const { data } = await axios.delete(`/api/todos/${id}`);
-      this.getTodos();
+      await axios.delete(`/api/todos/${id}`);
+      await this.getTodos();
     } catch (e) {
       console.log(e);
     }
   }
+
   getTodos = async () => {
     try {
       const { data: todos } = await axios.get('/api/todos');
-      this.setState({ todos, loading: false, todoText: '', error: '' });
+      this.setState({ todos, loading: false, todoText: '', errorMessage: '', error: false });
     } catch (error) {
-      this.setState({ error });
+      this.setState({ errorMessage: error, error: true });
+    }
+  }
+
+  handleUpdateClick = async (id, text, completed) => {
+    try {
+      await axios.put(`/api/todos/${id}`, { text, completed: !completed });
+      await this.getTodos();
+    } catch (error) {
+      this.setState({ errorMessage: error, error: true });
     }
   }
 
   renderList = () => {
-    const self = this;
     if(this.state.loading) {
       return <BarLoader css={{ margin: '0 auto',}} width={450}/>;
     } else {
       return (
-        <List divided >
+        <List animated divided >
           { this.state.todos.map(({ _id, text, completed }) => {
             return (
-              <List.Item key={_id}>
+              <List.Item key={_id} style={{ backgroundColor: completed ? 'yellow' : 'orange', fontSize: '20px'} }>
                 <List.Content floated="left" as={Link} to={`/todos/${_id}`}>
-                  <p style={{ paddingTop: '5px' }}>{text}</p>
+                  <p style={{ paddingTop: '5px', marginRight: '100px' }}>{text}</p>
                 </List.Content>
-                <List.Content floated="right">
-                  <DeleteModal size="mini" negative handleClick={self.handleClick} id={_id}>Delete</DeleteModal>
+                <List.Content floated='right'>
+                  <Button color='blue' content='Mark Complete' size='small' onClick={ () => this.handleUpdateClick(_id, text, completed)}/>
+                  <DeleteModal handleClick={this.handleDeleteClick} id={_id} text={text}/>
                 </List.Content>
               </List.Item>
             );
@@ -100,7 +114,7 @@ class TodoFormContainer extends Component {
               <Message
                 error
                 header='Action Forbidden'
-                content={this.state.error}/>
+                content={this.state.errorMessage}/>
                <Form.Button fluid color="teal" type='submit' onClick={this.handleSubmit}>Add Todo</Form.Button>
               { this.renderList() }
             </Segment>

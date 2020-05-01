@@ -21,7 +21,7 @@ module.exports = {
       const newTodo = await new Todo({ text }).save();
       return res.status(200).json(newTodo);
     } catch (error) {
-      return res.status(403).json({ error: 'You must provide a name' });
+      return res.status(403).json({ error });
     }
   },
   getTodoById: async (req, res) => {
@@ -54,10 +54,11 @@ module.exports = {
     try {
       const todo = await Todo.findByIdAndUpdate(id,
         { completed, text },
-        { new: true, useFindAndModify: false });
+        { new: true });
       if (!todo) {
         return res.status(404).json({ error: 'No todo found with that Id'});
       }
+      console.log(todo);
       return res.json(todo);
     } catch (error) {
       return res.status(403).json({ error });
