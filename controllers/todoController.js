@@ -43,7 +43,7 @@ module.exports = {
       if (!todo) {
         return res.status(404).json({ error: 'No todo found with that Id'});
       }
-      return res.json({ success: true });
+      return res.json({ todo });
     } catch (error) {
       return res.status(403).json({ error });
     }
@@ -58,7 +58,6 @@ module.exports = {
       if (!todo) {
         return res.status(404).json({ error: 'No todo found with that Id'});
       }
-      console.log(todo);
       return res.json(todo);
     } catch (error) {
       return res.status(403).json({ error });

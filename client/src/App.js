@@ -6,13 +6,11 @@ import {
   GridColumn
 } from 'semantic-ui-react';
 
-
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 
 import LogForm from './containers/LogForm';
 import TodoFormContainer from './containers/TodoFormContainer';
 import TodoCardContainer from './containers/TodoCardContainer';
-
 
 
 class App extends Component {

@@ -9,6 +9,10 @@ const TodoSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  dateCreated: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 const Todo = model('Todo', TodoSchema);

@@ -26,8 +26,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "if-env": "^1.0.4",
+    "moment": "^2.25.1",
     "mongoose": "^5.9.10",
     "validator": "^13.0.0"
   }

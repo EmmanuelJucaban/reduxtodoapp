@@ -6,7 +6,7 @@ module.exports = {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(403).json({ error: 'You must provide email and password' });
+      return res.status(422).json({ error: 'You must provide email and password' });
     }
 
     if (!isEmail(email)) {
