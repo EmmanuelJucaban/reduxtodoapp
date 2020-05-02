@@ -22,6 +22,8 @@ module.exports = {
       const existingUser = await User.findOne({ email });
       if (existingUser) { return res.status(403).json({ error: 'User already exists' }); }
       const user = await new User({ email, password }).save();
+
+      // Eventually we will send a token
       return res.json({ user });
     } catch (e) {
       return res.status(403).json({ e });
