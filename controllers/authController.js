@@ -1,5 +1,17 @@
 const { isEmail, isLength } = require('validator');
 const { User } = require('../models');
+const jwt = require('jwt-simple');
+const { secret } = require('./../config');
+
+const tokenForUser = function(user) {
+  // 1st argument is the information we want to encode
+  // 2nd argument is the secret we are going to use to encrypt it
+  // By convention all json web tokens have a sub property
+  //by sub we mean subject. As in who does this token belong to?
+  // iat or issued at time is another convention by  jwt
+  const timeStamp = new Date().getTime();
+  return jwt.encode({ sub: user._id, iat: timeStamp }, secret);
+};
 
 module.exports = {
   signUp: async (req, res) => {
@@ -22,9 +34,8 @@ module.exports = {
       const existingUser = await User.findOne({ email });
       if (existingUser) { return res.status(403).json({ error: 'User already exists' }); }
       const user = await new User({ email, password }).save();
-
       // Eventually we will send a token
-      return res.json({ user });
+      return res.json({ token: tokenForUser(user) });
     } catch (e) {
       return res.status(403).json({ e });
     }
