@@ -64,7 +64,4 @@ UserSchema.pre('save', async function (next) {
   }
 });
 
-
-
-
 module.exports = model('User', UserSchema);

@@ -5,7 +5,7 @@ const { requireAuth } = require('../../../middlewares/authMiddlewares');
 
 
 router.route('/')
-  .get(requireAuth, todoController.getTodos)
+  .get(todoController.getTodos)
   .post(requireAuth, todoController.addTodo);
 
 router.route('/:id')

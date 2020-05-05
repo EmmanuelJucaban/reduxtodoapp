@@ -33,11 +33,14 @@ class TodoFormContainer extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
+    if (this.state.todoText.length === 0) {
+      return this.setState({ errorMessage: 'You cannot leave the text field blank' });
+    }
     try {
       await axios.post('/api/todos', { text: this.state.todoText });
       this.getTodos();
     } catch (error) {
-      this.setState({ errorMessage: 'You cannot leave the text field blank', error: true });
+      this.setState({ error: true });
     }
   }
 
@@ -113,7 +116,7 @@ class TodoFormContainer extends Component {
                 onSubmit={this.handleSubmit}/>
               <Message
                 error
-                header='Action Forbidden'
+                header='You must be logged in to do that'
                 content={this.state.errorMessage}/>
                <Form.Button fluid color="teal" type='submit' onClick={this.handleSubmit}>Add Todo</Form.Button>
               { this.renderList() }

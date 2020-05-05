@@ -24,7 +24,6 @@ module.exports = {
       await req.user.save();
       return res.status(200).json(newTodo);
     } catch (error) {
-      console.log(error);
       return res.status(403).json({ error });
     }
   },
