@@ -18,8 +18,8 @@ const jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
   //  If it does, call 'done' with that user
   //  otherwise, call done without a user object
   try {
-    const user = await User.findById(payload.sub);
-    if (user) {
+    const user = await User.findById(payload.sub).select('-password');
+    if (!user) {
       return done(null, false);
     }
     return done(null, user);

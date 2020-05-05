@@ -2,6 +2,7 @@ const { Todo } = require('../models');
 
 module.exports = {
   getTodos: async (req, res) => {
+    console.log(req.user);
     try {
       const todos = await Todo.find();
       if (!todos) {
@@ -18,9 +19,12 @@ module.exports = {
       return res.status(403).json({ error: 'You must provide a text' });
     }
     try {
-      const newTodo = await new Todo({ text }).save();
+      const newTodo = await new Todo({ text, user: req.user._id }).save();
+      req.user.todos.push(newTodo);
+      await req.user.save();
       return res.status(200).json(newTodo);
     } catch (error) {
+      console.log(error);
       return res.status(403).json({ error });
     }
   },
@@ -40,6 +44,7 @@ module.exports = {
     const { id } = req.params;
     try {
       const todo = await Todo.findByIdAndDelete(id);
+      console.log(todo);
       if (!todo) {
         return res.status(404).json({ error: 'No todo found with that Id'});
       }

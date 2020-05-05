@@ -20,7 +20,18 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
+  todos: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Todo',
+  }],
 });
+
+UserSchema.methods.toJSON = function() {
+  var obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
+
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   const user = this;
@@ -38,19 +49,22 @@ UserSchema.pre('save', async function (next) {
   let salt;
   let hash;
   // Gn
-  try {
-    salt = await bcrypt.genSalt();
-    hash = await bcrypt.hash(user.password, salt);
-  } catch (e) {
-    // Call save with an error
-    next(e);
+  if (user.isModified('password')) {
+    try {
+      salt = await bcrypt.genSalt();
+      hash = await bcrypt.hash(user.password, salt);
+    } catch (e) {
+      // Call save with an error
+      next(e);
+    }
+    // overwrite the plain text password with our hash
+    user.password = hash;
+    // Finally call save
+    next();
   }
-  console.log(salt);
-  console.log(hash);
-  // overwrite the plain text password with our hash
-  user.password = hash;
-  // Finally call save
-  next();
 });
+
+
+
 
 module.exports = model('User', UserSchema);
