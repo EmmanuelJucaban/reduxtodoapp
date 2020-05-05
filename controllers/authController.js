@@ -42,4 +42,5 @@ module.exports = {
       return res.status(403).json({ e });
     }
   },
+  signIn: (req, res) => res.json({ token: tokenForUser(req.user) }),
 };

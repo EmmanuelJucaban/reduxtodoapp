@@ -22,7 +22,17 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.pre('save', async function(next) {
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const user = this;
+  try {
+    const isMatch = await bcrypt.compare(candidatePassword, user.password);
+    return Promise.resolve(isMatch);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
+UserSchema.pre('save', async function (next) {
   // gets access to the user model that is currently being saved
   const user = this;
   let salt;
